@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\depositKelas_Member;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,7 +63,7 @@ class UserController extends Controller
             'jk_member'=>'required',
             'telp_member'=>'required',
             'alamat_member'=>'required',
-            'deposit_uang_member'=>'required',
+            // 'deposit_uang_member'=>'required',
             // 'status_member'=>'required',
             // 'status_member'=>'required',
         ]);
@@ -102,7 +103,7 @@ class UserController extends Controller
             'alamat_member'=>'required',
             'password'=>'required',
             // 'tgl_expired_member'=>'required|date',
-            'deposit_uang_member'=>'required',
+            // 'deposit_uang_member'=>'required',
             // 'status_member'=>'required',
             
         ]); //membuat rule validasi input
@@ -119,7 +120,7 @@ class UserController extends Controller
         $user->alamat_member = $updateData['alamat_member'];     
         $user->password = $updateData['password'];     
         // $user->tgl_expired_member = $updateData['tgl_expired_member'];     
-        $user->deposit_uang_member = $updateData['deposit_uang_member'];     
+        // $user->deposit_uang_member = $updateData['deposit_uang_member'];     
         // $user->status_member = $updateData['status_member'];     
         if($user->save()){
             return response()->json([               
@@ -155,6 +156,64 @@ class UserController extends Controller
             'message'=>'delete User failed',
             'data'=>null
         ],400);
+    }
+
+    public function deaktivasi()
+    {
+        $members = User::where('tgl_expired_member', '!=', null)->where('tgl_expired_member', '<=', Carbon::now())->get();
+        foreach($members as $member){
+            $member->tgl_expired_member = null;
+            $member->status_member = 0;
+            $member->save();
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil deaktivasi member',
+            'data' => $members
+        ], 200);
+    }
+
+    public function expiredMemberIndex(){
+    
+        $today = Carbon::today()->toDateString();
+        $users = User::whereDate('tgl_expired_member', $today)->get();
+                           
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar Member Expired',
+            'data' => $users
+        ], 200);
+    }
+
+    public function expiredDepoKelasIndex(){
+    
+        $today = Carbon::today()->toDateString();
+        
+        $expDepoKelasIndex=depositKelas_Member::join('users', 'users.id', '=', 'deposit_kelasmembers.id_member')
+        ->join('kelas', 'kelas.id', '=', 'deposit_kelasmembers.id_kelas')
+        ->select('users.nama_member','kelas.nama_kelas','deposit_kelasmembers.masa_berlaku_depositK')
+        ->whereDate('masa_berlaku_depositK', $today)->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar Deposit Kelas Member Expired',
+            'data' => $expDepoKelasIndex
+        ], 200);
+    }
+
+    public function deaktivasiDepoKelas()
+    {
+        $depoKelasMembers = depositKelas_Member::where('masa_berlaku_depositK', '!=', null)->where('masa_berlaku_depositK', '<=', Carbon::now())->get();
+        foreach($depoKelasMembers as $depo){
+            $depo->masa_berlaku_depositK = null;
+            $depo->sisa_depositK = 0;
+            $depo->save();
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil deaktivasi depo kelas member',
+            'data' => $depoKelasMembers
+        ], 200);
     }
 
     public function resetPassword($id)

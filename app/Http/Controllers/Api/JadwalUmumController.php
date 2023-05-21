@@ -27,12 +27,12 @@ class JadwalUmumController extends Controller
         $jadwalUmums = JadwalUmum::join('kelas', 'kelas.id', '=', 'jadwal_umums.id_kelas')
                         ->join('instrukturs', 'instrukturs.id', '=', 'jadwal_umums.id_instruktur')
                         ->orderByRaw("CASE jadwal_umums.hari
-                                          WHEN 'Senin' THEN 1
-                                          WHEN 'Selasa' THEN 2
-                                          WHEN 'Rabu' THEN 3
-                                          WHEN 'Kamis' THEN 4
-                                          WHEN 'Jumat' THEN 5
-                                          WHEN 'Sabtu' THEN 6
+                                          WHEN 'Monday' THEN 1
+                                          WHEN 'Tuesday' THEN 2
+                                          WHEN 'Wednesday' THEN 3
+                                          WHEN 'Thursday' THEN 4
+                                          WHEN 'Friday' THEN 5
+                                          WHEN 'Saturday' THEN 6
                                           ELSE 7
                                       END")
                         ->orderBy('jadwal_umums.jam_kelas')

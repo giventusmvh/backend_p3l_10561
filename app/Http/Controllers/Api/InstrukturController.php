@@ -111,6 +111,45 @@ class InstrukturController extends Controller
         ], 400); 
     }
 
+    //Ubah password Instruktur berdasarkan token
+    public function ubahPassword(Request $request,$id){
+        $instruktur = instruktur::find($id);
+        if(is_null($instruktur)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Instruktur tidak ditemukan',
+                'data' => null
+            ], 400);
+        }
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+                'data' => null
+            ], 400);
+        }
+        
+            $instruktur->password = bcrypt($request->password);
+            if($instruktur->save()){
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berhasil mengubah password',
+                    'data' => $instruktur
+                ], 200);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengubah password',
+                    'data' => null
+                ], 400);
+            }
+        
+    }
+
+
     public function destroy($id)
     {
         $instruktur=Instruktur::find($id);

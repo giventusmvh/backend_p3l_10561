@@ -117,4 +117,41 @@ class PegawaiController extends Controller
         ], 400); 
     }
 
+    public function ubahPassword(Request $request,$id){
+        $pegawai = Pegawai::find($id);
+        if(is_null($pegawai)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Pegawai tidak ditemukan',
+                'data' => null
+            ], 400);
+        }
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+                'data' => null
+            ], 400);
+        }
+        
+            $pegawai->password = bcrypt($request->password);
+            if($pegawai->save()){
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berhasil mengubah password',
+                    'data' => $pegawai
+                ], 200);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengubah password',
+                    'data' => null
+                ], 400);
+            }
+        
+    }
+
 }

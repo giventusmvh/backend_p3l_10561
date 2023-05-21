@@ -3,34 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\SesiGym;
 use Illuminate\Http\Request;
-use App\Models\Kelas;
 
-class KelasController extends Controller
+class SesiGymController extends Controller
 {
     public function index(Request $request){
-        $kelas = Kelas::all();
+        $sesi = SesiGym::all();
         return response()->json([
             'success' => true,
-            'message' => 'Daftar Kelas',
-            'data' => $kelas
+            'message' => 'Daftar Sesi',
+            'data' => $sesi
         ], 200);
     }
 
     public function show($id){
-        $kelas = Kelas::find($id);
+        $instruktur = SesiGym::find($id);
 
-        if(!is_null($kelas)){
+        if(!is_null($instruktur)){
             return response([
-                'message' => 'Retrieve Kelas Success',
-                'data' => $kelas
+                'message' => 'Retrieve Instruktur Success',
+                'data' => $instruktur
             ], 200);
         } 
 
         return response([
-            'message' => 'Kelas Not Found',
+            'message' => 'Instruktur Not Found',
             'data' => null
         ], 400); 
     }
-
 }

@@ -49,26 +49,37 @@ class AuthController extends Controller
         if(Pegawai::where('email', '=', $loginData['email'])->first()){
             $pegawai = Pegawai::where('email' , '=', $loginData['email'])->first();
 
-            if(Hash::check($loginData['password'], $pegawai['password'])){
-                $token = Str::random(80);
-    
-                $pegawai->api_token = hash('sha256', $token);
-                $pegawai->save();
-    
-                return response()->json([
-                    'success'=>true,
-                    'message' => 'Pegawai Authenticated',
-                    'user' => $pegawai,
-                    'token_type' => 'Bearer',
-                    'token' => $token,
-                ]); // return data user dan token dalam bentuk json
+            if($pegawai->role=='manager'){
+                if(Hash::check($loginData['password'], $pegawai['password'])){
+                    $token = Str::random(80);
+        
+                    $pegawai->api_token = hash('sha256', $token);
+                    $pegawai->save();
+        
+                    return response()->json([
+                        'id'=>$pegawai->id,
+                        'manager'=>true,
+                        'success'=>true,
+                        'message' => 'Pegawai Authenticated',
+                        'user' => $pegawai,
+                        'token_type' => 'Bearer',
+                        'token' => $token,
+                    ]); // return data user dan token dalam bentuk json
+                }else{
+                    
+                    return response()->json([
+                        'success'=>false,
+                        'message' =>' Wrong Email or Password',
+                    ], 400);
+                }
             }else{
-                
                 return response()->json([
                     'success'=>false,
-                    'message' =>' Wrong Email or Password',
+                    'message' =>'BUKAN MANAGER OPERASIONAL',
                 ], 400);
             }
+
+            
         }else if(Instruktur::where('email', '=', $loginData['email'])->first()){
             $instruktur = Instruktur::where('email' , '=', $loginData['email'])->first();
 
@@ -79,6 +90,8 @@ class AuthController extends Controller
                 $instruktur->save();
     
                 return response()->json([
+                    'id'=>$instruktur->id,
+                    'instruktur'=>true,
                     'success'=>true,
                     'message' => 'Instruktur Authenticated',
                     'user' => $instruktur,
@@ -102,6 +115,8 @@ class AuthController extends Controller
                 $member->save();
     
                 return response()->json([
+                    'id'=>$member->id,
+                    'member'=>true,
                     'success'=>true,
                     'message' => 'User / Member Authenticated',
                     'user' => $member,
