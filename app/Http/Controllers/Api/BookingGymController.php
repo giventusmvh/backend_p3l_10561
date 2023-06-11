@@ -161,6 +161,32 @@ class BookingGymController extends Controller
                             ,'users.nama_member')
                             ->where('booking_gyms.id_member', $id)
                             ->where('booking_gyms.cancel', false)
+                            ->whereNull('booking_gyms.waktu_presensi_gym')
+                            ->get();
+            
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar Booking Gym',
+                'data' => $indexBookingKelas,
+            ], 200);
+        
+        
+    }
+
+    public function historyGym($id){
+
+        $indexBookingKelas = BookingGym::join('sesi_gyms', 'sesi_gyms.id', '=', 'booking_gyms.id_sesi')
+                            ->join('users', 'users.id', '=', 'booking_gyms.id_member')
+                            ->orderBy('booking_gyms.created_at', 'desc')
+                            ->select('booking_gyms.id','booking_gyms.id_member','booking_gyms.no_booking','booking_gyms.tgl_booking', 'booking_gyms.id_sesi'
+                            ,'booking_gyms.waktu_presensi_gym'
+                            ,'booking_gyms.cancel'
+                            ,'booking_gyms.created_at'
+                            ,'sesi_gyms.jam_mulai'
+                            ,'sesi_gyms.jam_selesai'
+                            ,'users.nama_member')
+                            ->where('booking_gyms.id_member', $id)
                             ->get();
             
     

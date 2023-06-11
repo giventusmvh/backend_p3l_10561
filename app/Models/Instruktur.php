@@ -18,7 +18,9 @@ class Instruktur extends Model
         'telp_instruktur',
         'password',
         'email',
-        'api_token'
+        'api_token',
+        'akumulasi_terlambat'
+
     ];
 
     public function getCreatedAtAttribute(){

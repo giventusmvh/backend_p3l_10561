@@ -53,6 +53,7 @@ Route::post('izinInstruktur/ajukanIzin','Api\IzinInstrukturController@ajukanizin
 
 Route::get('kelas/{id}','Api\KelasController@show');
 Route::get('depositKelas/{id}','Api\DepositKelasController@show');
+Route::get('depositKelas/profile/{id}','Api\DepositKelasController@profile');
 
 Route::put('instruktur/ubahPW/{id}','Api\InstrukturController@ubahPassword');
 Route::put('pegawai/ubahPW/{id}','Api\PegawaiController@ubahPassword');
@@ -80,12 +81,14 @@ Route::get('pegawai','Api\PegawaiController@index');
 
     Route::post('bookingKelas','Api\BookingKelasController@store');
     Route::get('bookingKelas/show/{id}','Api\BookingKelasController@show');
+    Route::get('bookingKelas/history/{id}','Api\BookingKelasController@historyKelas');
     Route::get('bookingKelas/showByID/{id}','Api\BookingKelasController@showByID');
     Route::post('bookingKelas/cancel/{id}','Api\BookingKelasController@cancel');
     Route::get('bookingKelas/showKasir/{id}','Api\BookingKelasController@showKasir');
 
     Route::post('bookingGym','Api\BookingGymController@store');
     Route::get('bookingGym/show/{id}','Api\BookingGymController@show');
+    Route::get('bookingGym/history/{id}','Api\BookingGymController@historyGym');
     Route::post('bookingGym/cancel/{id}','Api\BookingGymController@cancel');
     Route::get('sesi', 'Api\SesiGymController@index');
     Route::get('sesi/{id}', 'Api\SesiGymController@show');
@@ -95,11 +98,18 @@ Route::get('pegawai','Api\PegawaiController@index');
 
     Route::post('presensiInstruktur/jamMulai/{id}','Api\PresensiInstrukturController@updateJamMulai');
     Route::put('presensiInstruktur/jamSelesai/{id}','Api\PresensiInstrukturController@updateJamSelesai');
+    Route::get('presensiInstruktur/history/{id}','Api\PresensiInstrukturController@history');
 
     Route::get('presensiKelas/showToday/{id}','Api\PresensiKelasController@showToday');
     Route::get('presensiKelas/show','Api\PresensiKelasController@show');
     Route::put('presensiKelas/presensiHadir/{id}','Api\PresensiKelasController@presensiHadir');
     Route::put('presensiKelas/presensiTidakHadir/{id}','Api\PresensiKelasController@presensiTidakHadir');
+
+    Route::get('jumlahInstruktur','Api\LaporanController@hitungKehadiranDanKetidakhadiran');
+    Route::get('laporanGym','Api\LaporanController@laporanGym');
+    Route::get('laporanKelas','Api\LaporanController@laporanKelas');
+    Route::get('penghitunganTotal','Api\LaporanController@penghitunganTotal');
+    Route::get('totalPendapatan','Api\LaporanController@totalPendapatan');
 
 Route::group(['middleware' => ['auth:pegawai']], function() {
     

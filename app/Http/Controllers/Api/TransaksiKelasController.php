@@ -38,7 +38,7 @@ class TransaksiKelasController extends Controller
                         ,'kelas.harga_kelas'
                         ,'kelas.nama_kelas'
                         , 'users.nama_member')
-                        
+                        ->orderBy('transaksi_kelass.tgl_TransaksiKelas', 'desc')
                         ->get();
 
        

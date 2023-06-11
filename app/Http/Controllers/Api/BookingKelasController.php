@@ -177,6 +177,39 @@ class BookingKelasController extends Controller
                             ->select('instruktursPengganti.nama_instruktur as pengganti','jadwal_harians.status_jadwalHarian','booking_kelas.id','booking_kelas.id_member','booking_kelas.no_booking','kelas.nama_kelas', 'jadwal_harians.tanggal', 'booking_kelas.cancel','jadwal_umums.jam_kelas', 'instrukturs.nama_instruktur')
                             ->where('booking_kelas.id_member', $id)
                             ->where('booking_kelas.cancel', false)
+                            ->whereNull('booking_kelas.waktu_presensi_kelas')
+                            ->get();
+            
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar Booking Kelas',
+                'data' => $indexBookingKelas,
+            ], 200);
+        
+        
+    }
+
+    public function historyKelas($id){
+
+        $indexBookingKelas = BookingKelas::join('jadwal_harians', 'jadwal_harians.id', '=', 'booking_kelas.id_jadwalHarian')
+                            ->join('jadwal_umums', 'jadwal_umums.id', '=', 'jadwal_harians.id_jadwalUmum')
+                            ->join('kelas', 'jadwal_umums.id_kelas', '=', 'kelas.id')
+                            ->join('instrukturs', 'instrukturs.id', '=', 'jadwal_umums.id_instruktur')
+                            ->leftjoin('instrukturs as instruktursPengganti', 'instruktursPengganti.id', '=', 'jadwal_umums.id_instruktur_pengganti')
+                            ->orderBy('booking_kelas.created_at', 'desc')
+                            ->select('instruktursPengganti.nama_instruktur as pengganti'
+                            ,'jadwal_harians.status_jadwalHarian'
+                            ,'booking_kelas.id'
+                            ,'booking_kelas.id_member'
+                            ,'booking_kelas.no_booking'
+                            ,'kelas.nama_kelas'
+                            , 'jadwal_harians.tanggal'
+                            , 'booking_kelas.cancel'
+                            , 'booking_kelas.waktu_presensi_kelas'
+                            ,'jadwal_umums.jam_kelas'
+                            , 'instrukturs.nama_instruktur')
+                            ->where('booking_kelas.id_member', $id)
                             ->get();
             
     

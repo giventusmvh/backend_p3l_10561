@@ -15,6 +15,7 @@ class PresensiInstruktur extends Model
         'id_jadwalHarian',
         'waktu_mulai',
         'waktu_selesai',
+        'keterlambatan'
     
     ];
 

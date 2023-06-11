@@ -53,16 +53,16 @@ class JadwalHarianController extends Controller
 
         // // ambil semua data jadwal yang sudah ada
         // $jadwalLama = JadwalHarian::all();
-        // $jadwalUmumlama=JadwalUmum::all();
+        $jadwalUmumlama=JadwalUmum::all();
         // // hapus semua data jadwal yang sudah ada
         // foreach ($jadwalLama as $jadwal) {
         //     $jadwal->delete();
         // }
 
-        // foreach ($jadwalUmumlama as $jadwalU) {
-        //     $jadwalU->id_instruktur_pengganti =NULL;
-        //     $jadwalU->save();
-        // }
+        foreach ($jadwalUmumlama as $jadwalU) {
+            $jadwalU->id_instruktur_pengganti =NULL;
+            $jadwalU->save();
+        }
 
         $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDay();
         $end_date =  Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDays(7);
